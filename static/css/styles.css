@@ -29,6 +29,12 @@ body {
     max-width: 400px;
 }
 
+/* Stile del contenitore guest_home */
+.guest_home {
+    text-align: center;
+    margin-top: 2rem;
+}
+
 /* Stile titoli */
 h1 {
     color: #333;
@@ -40,6 +46,12 @@ h2 {
     color: #666;
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    font-weight: normal;
+}
+
+p {
+    color: #777;
+    font-size: 0.9rem;
     font-weight: normal;
 }
 
@@ -88,7 +100,7 @@ button {
     transition: background-color 0.3s;
 }
 
-/* Bottone Login (Primario) */
+/* Bottone Login */
 .auth-form button {
     background-color: #007bff;
     color: white;
@@ -99,14 +111,16 @@ button {
     background-color: #0056b3;
 }
 
-/* Bottone Guest (Secondario) */
-.Guest button {
-    background-color: transparent;
+.Guest a {
+    text-decoration: none;     /* Via la sottolineatura */
+    text-align: center;        /* Testo al centro */
+    font-weight: 600;
     color: #555;
-    border: 1px solid #ccc;
 }
 
-.Guest button:hover {
-    background-color: #e2e6ea;
-    color: #333;
+.logout-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: red;
+    text-decoration: none;
 }
