@@ -6,6 +6,5 @@ class User(BaseModel):
     name: str
     surname: str
     username: str
-    # email: Optional[EmailStr] = None
+    email: EmailStr
     hashed_password: str
-    # is_active: bool = True

@@ -10,31 +10,6 @@ body {
     margin: 0;
 }
 
-/* Stile del contenitore principale */
-.auth-container {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 8px; /* Angoli arrotondati */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombreggiatura elegante */
-    width: 100%;
-    max-width: 400px; /* Larghezza massima della scheda */
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-/* Stile del contenitore Guest */
-.Guest {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-/* Stile del contenitore guest_home */
-.guest_home {
-    text-align: center;
-    margin-top: 2rem;
-}
-
 /* Stile titoli */
 h1 {
     color: #333;
@@ -55,37 +30,12 @@ p {
     font-weight: normal;
 }
 
-/* Stile del Form e Input */
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Allinea etichette a sinistra */
-}
-
 label {
     font-weight: bold;
     margin-bottom: 0.5rem;
     color: #555;
     width: 100%;
     text-align: left;
-}
-
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px; /* Spazio sotto ogni input */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Assicura che il padding non aumenti la larghezza */
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-/* Effetto quando clicchi sull'input */
-input:focus {
-    border-color: #007bff;
-    outline: none;
 }
 
 /* Stile dei Bottoni */
@@ -98,24 +48,6 @@ button {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
-}
-
-/* Bottone Login */
-.auth-form button {
-    background-color: #007bff;
-    color: white;
-    margin-top: 10px;
-}
-
-.auth-form button:hover {
-    background-color: #0056b3;
-}
-
-.Guest a {
-    text-decoration: none;     /* Via la sottolineatura */
-    text-align: center;        /* Testo al centro */
-    font-weight: 600;
-    color: #555;
 }
 
 .logout-link {

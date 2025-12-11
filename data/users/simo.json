@@ -1,0 +1,7 @@
+{
+    "name": "Simone",
+    "surname": "Pedretti",
+    "username": "simo",
+    "email": "simonepedretti04@gmail.com",
+    "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wNi7dy6ltNb6nxPiXGuttQ$3nQKJJb6EwqzPACXhgEy8G3ZRdDN3sUSSoCFXo88IfY"
+}
