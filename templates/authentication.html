@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="/static/css/authentication.css">
 {% endblock %}
 
-
 {% block content %}
     <div class="auth-container">
         <h1>Welcome!</h1>
@@ -46,21 +45,6 @@
             var form = document.querySelector('.auth-form');
             if (form) {
                 form.reset(); // reset form fields
-            }
-
-            var isBackNavigation = event.persisted || 
-                               (typeof window.performance != "undefined" && 
-                                window.performance.getEntriesByType("navigation")[0] && 
-                                window.performance.getEntriesByType("navigation")[0].type === "back_forward");
-
-            // if the page is loaded via back navigation
-            if (isBackNavigation) {
-                
-                // don't show the error banner
-                var errorBanner = document.querySelector('.error-banner');
-                if (errorBanner) {
-                    errorBanner.style.display = 'none';
-                }
             }
         });
     </script>

@@ -6,6 +6,12 @@
 
 {% block content %}
     <div class="register-container">
+        {% if error %}
+            <div class="error-banner" style="background-color: #ffdddd; color: red; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+                {{ error }}
+            </div>
+        {% endif %}
+
         <h1>Create your Account</h1>
 
         <form action="/register" method="POST" class="reg-form">

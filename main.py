@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, Request, status
+from fastapi import FastAPI, Form, Request, status, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -28,14 +28,8 @@ async def root(request: Request):
         "error": error_message
     })
     
-    if request.cookies.get("session_token"):
-        response.delete_cookie("session_token", path="/", httponly=True)
     if error_message:
         response.delete_cookie("flash_error")
-
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
 
     return response
 
@@ -52,7 +46,8 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
     response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
 
-    response.set_cookie(key="session_token", value=username, path="/", httponly=True)
+    response.set_cookie(key="session_token", value=username, path="/", httponly=True, max_age=1800)  # 30 minutes session
+    response.delete_cookie(key="flash_error")
 
     return response
 
@@ -104,11 +99,14 @@ async def logout(request: Request):
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     # Delete current session
-    response.delete_cookie(key="session_token", path="/", httponly=True)
-    
-    # Not allow cahing of logged in pages
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    
+    response.set_cookie(key="session_token", value="", path="/", httponly=True, max_age=0)
     return response
+
+### --- Session Check Endpoint --- ###
+@app.get("/check_session")
+async def check_session(request: Request):
+    token = request.cookies.get("session_token")
+    if not token:
+        return Response(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+    return Response(status_code=status.HTTP_200_OK)
