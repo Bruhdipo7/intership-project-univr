@@ -62,6 +62,11 @@ async def home(request: Request):
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     current_user = crud.get_user(cookie_username)
+    if not current_user:
+        response = RedirectResponse(url="/user_login", status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie(key="session_token", value="", path="/", httponly=True, max_age=0)
+        return response
+    
     # If logged in, show home page
     response = templates.TemplateResponse("user/user_home.html", {"request": request, "user": current_user}) 
 
@@ -105,6 +110,11 @@ async def home(request: Request):
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     current_org = crud.get_organization(cookie_org)
+    if not current_org:
+        response = RedirectResponse(url="/org_login", status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie(key="session_token", value="", path="/", httponly=True, max_age=0)
+        return response
+
     # If logged in, show home page
     response = templates.TemplateResponse("org/org_home.html", {"request": request, "org": current_org}) 
 

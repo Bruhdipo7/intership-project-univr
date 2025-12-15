@@ -5,23 +5,20 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>Welcome!</h1>
+    <div class="page-container">    
+        <div class="start-box">
+            <h1>Welcome!</h1>
 
-        <div class="User">
-            <a href="/user_login">Individual User</a>
-        </div>
+            <div class="action-group">
+                <a href="/user_login" class="btn btn-primary">Individual User</a>
+                <a href="/org_login" class="btn btn-primary">Organization</a>
+            </div>
 
-        <div class="Organization">
-            <a href="/org_login">Organization</a>
-        </div>
+            <hr class="hr">
 
-        <hr class="hr">
-
-        <div class="Guest">
-            <a href="/guest_home">Continue as a Guest</a>
-        </div>
-
+            <div class="guest-group">
+                <a href="/guest_home" class="btn btn-secondary">Continue as a Guest</a>
+            </div>
         </div>
     </div>
 {% endblock %}
