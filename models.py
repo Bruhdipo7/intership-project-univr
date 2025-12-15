@@ -8,3 +8,10 @@ class User(BaseModel):
     username: str
     email: EmailStr
     hashed_password: str
+
+class Organization(BaseModel):
+    name: str
+    address: str
+    phone: str
+    email: EmailStr
+    hashed_password: str

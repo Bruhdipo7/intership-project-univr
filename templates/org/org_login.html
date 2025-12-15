@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Login as an Organization</h1>
+
+        {% if error %}
+            <div class="error-banner" style="background-color: #ffdddd; color: red; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form action="/org_login" method="POST" class="auth-form" autocomplete="off">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <hr class="hr">
+
+        <div class="register">
+            <a href="/org_register">Don't have an account? Register here!</a>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('pageshow', function(event) {
+            // inputs cleaner
+            var form = document.querySelector('.auth-form');
+            if (form) {
+                form.reset(); // reset form fields
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,47 +1,44 @@
 {% extends "base.html" %}
 
 {% block css %}
-    <link rel="stylesheet" href="/static/css/register.css">
+    <link rel="stylesheet" href="/static/css/login.css">
 {% endblock %}
 
 {% block content %}
-    <div class="register-container">
+    <div class="container">
+        <h1>Login as an Individual User</h1>
+
         {% if error %}
             <div class="error-banner" style="background-color: #ffdddd; color: red; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
                 {{ error }}
             </div>
         {% endif %}
 
-        <h1>Create your Account</h1>
-
-        <form action="/register" method="POST" class="reg-form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="surname">Surname:</label>
-            <input type="text" id="surname" name="surname" required>
-
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
+        <form action="/user_login" method="POST" class="auth-form" autocomplete="off">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <button type="submit">Register</button>
+            <button type="submit">Login</button>
         </form>
+
+        <hr class="hr">
+
+        <div class="register">
+            <a href="/user_register">Don't have an account? Register here!</a>
+        </div>
+
     </div>
 
     <script>
         window.addEventListener('pageshow', function(event) {
             // inputs cleaner
-            var form = document.querySelector('.reg-form');
+            var form = document.querySelector('.auth-form');
             if (form) {
                 form.reset(); // reset form fields
             }
         });
     </script>
-
 {% endblock %}

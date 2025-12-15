@@ -1,0 +1,23 @@
+/* main container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 2rem;
+}
+
+.container a {
+    text-decoration: none;     /* Via la sottolineatura */
+    text-align: center;        /* Testo al centro */
+    font-weight: 600;
+    color: #555;
+}
+
+.hr {
+    width: 80%;
+    border: 0;
+    height: 1px;
+    background: #ccc;
+}

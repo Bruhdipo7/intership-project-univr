@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/index.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Welcome!</h1>
+
+        <div class="User">
+            <a href="/user_login">Individual User</a>
+        </div>
+
+        <div class="Organization">
+            <a href="/org_login">Organization</a>
+        </div>
+
+        <hr class="hr">
+
+        <div class="Guest">
+            <a href="/guest_home">Continue as a Guest</a>
+        </div>
+
+        </div>
+    </div>
+{% endblock %}

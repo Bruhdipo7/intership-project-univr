@@ -1,48 +1,43 @@
 {% extends "base.html" %}
 
 {% block css %}
-    <link rel="stylesheet" href="/static/css/authentication.css">
+    <link rel="stylesheet" href="/static/css/register.css">
 {% endblock %}
 
 {% block content %}
-    <div class="auth-container">
-        <h1>Welcome!</h1>
-
+    <div class="register-container">
         {% if error %}
             <div class="error-banner" style="background-color: #ffdddd; color: red; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
                 {{ error }}
             </div>
         {% endif %}
 
-        <form action="/login" method="POST" class="auth-form" autocomplete="off">
+        <h1>Create your Account</h1>
+
+        <form action="/user_register" method="POST" class="reg-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="surname">Surname:</label>
+            <input type="text" id="surname" name="surname" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <button type="submit">Login</button>
+            <button type="submit">Register</button>
         </form>
-
-        <hr class="hr">
-
-        <div class="Register">
-            <a href="/register">Don't have an account? Register here!</a>
-        </div>
-
-        <hr class="hr">
-
-        <div class="Guest">
-            <a href="/guest_home">Continue as a Guest</a>
-        </div>
-
-        </div>
     </div>
 
     <script>
         window.addEventListener('pageshow', function(event) {
             // inputs cleaner
-            var form = document.querySelector('.auth-form');
+            var form = document.querySelector('.reg-form');
             if (form) {
                 form.reset(); // reset form fields
             }

@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from pydantic import EmailStr
 
 import crud
-from models import User
+from models import User, Organization
 
 app = FastAPI()
 
@@ -19,40 +19,43 @@ templates = Jinja2Templates(directory="templates")
 # Sicurezza password
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
+### --- Root --- ###
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    error_message = request.cookies.get("flash_error")
+    return templates.TemplateResponse("index.html", {"request": request})
 
-    response = templates.TemplateResponse("authentication.html", {
+### --- User Login --- ###
+@app.get("/user_login", response_class=HTMLResponse)
+async def user_login(request: Request):
+    error_message = request.cookies.get("flash_error")
+    response = templates.TemplateResponse("user/user_login.html", {
         "request": request,
         "error": error_message
     })
-    
     if error_message:
         response.delete_cookie("flash_error")
-
+    
     return response
 
-### --- Authentication Endpoints --- ###
-@app.post("/login", response_class=HTMLResponse)
+@app.post("/user_login", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
     user = crud.get_user(username)
 
     if not user or not pwd_context.verify(password, user.hashed_password):
-        response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+        response = RedirectResponse(url="/user_login", status_code=status.HTTP_303_SEE_OTHER)
         
         response.set_cookie(key="flash_error", value="Invalid credentials. Please try again.")
         return response
 
-    response = RedirectResponse(url="/home", status_code=status.HTTP_303_SEE_OTHER)
+    response = RedirectResponse(url="/user_home", status_code=status.HTTP_303_SEE_OTHER)
 
-    response.set_cookie(key="session_token", value=username, path="/", httponly=True, max_age=1800)  # 30 minutes session
+    response.set_cookie(key="session_token", value=user, path="/", httponly=True, max_age=1800)  # 30 minutes session
     response.delete_cookie(key="flash_error")
 
     return response
 
-### --- Home Endpoints --- ###
-@app.get("/home", response_class=HTMLResponse)
+### --- User Home --- ###
+@app.get("/user_home", response_class=HTMLResponse)
 async def home(request: Request):
     cookie_username = request.cookies.get("session_token")
     if not cookie_username:
@@ -60,20 +63,64 @@ async def home(request: Request):
     
     current_user = crud.get_user(cookie_username)
     # If logged in, show home page
-    response = templates.TemplateResponse("home.html", {"request": request, "user": current_user}) 
+    response = templates.TemplateResponse("user/user_home.html", {"request": request, "user": current_user}) 
 
     return response
 
+### --- Organization Login --- ###
+@app.get("/org_login", response_class=HTMLResponse)
+async def org_login(request: Request):
+    error_message = request.cookies.get("flash_error")
+    response = templates.TemplateResponse("org/org_login.html", {
+        "request": request,
+        "error": error_message
+    })
+    if error_message:
+        response.delete_cookie("flash_error")
+    
+    return response
+
+@app.post("/org_login", response_class=HTMLResponse)
+async def login(request: Request, email: str = Form(...), password: str = Form(...)):
+    org = crud.get_organization(email)
+
+    if not org or not pwd_context.verify(password, org.hashed_password):
+        response = RedirectResponse(url="/org_login", status_code=status.HTTP_303_SEE_OTHER)
+        
+        response.set_cookie(key="flash_error", value="Invalid credentials. Please try again.")
+        return response
+
+    response = RedirectResponse(url="/org_home", status_code=status.HTTP_303_SEE_OTHER)
+
+    response.set_cookie(key="session_token", value=org, path="/", httponly=True, max_age=1800)  # 30 minutes session
+    response.delete_cookie(key="flash_error")
+
+    return response
+
+### --- Organization Home --- ###
+@app.get("/org_home", response_class=HTMLResponse)
+async def home(request: Request):
+    cookie_org = request.cookies.get("session_token")
+    if not cookie_org:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
+    current_org = crud.get_org(cookie_org)
+    # If logged in, show home page
+    response = templates.TemplateResponse("org/org_home.html", {"request": request, "user": current_org}) 
+
+    return response
+
+### --- Guest Home --- ###
 @app.get("/guest_home", response_class=HTMLResponse)
 async def gust_home(request: Request):
     return templates.TemplateResponse("guest_home.html", {"request": request})
 
-### --- Registration Endpoints --- ###
-@app.get("/register", response_class=HTMLResponse)
+### --- User Registration --- ###
+@app.get("/user_register", response_class=HTMLResponse)
 async def register(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse("user/user_register.html", {"request": request})
 
-@app.post("/register", response_class=HTMLResponse)
+@app.post("/user_register", response_class=HTMLResponse)
 async def register_user(
     request: Request, 
     name: str = Form(...),
@@ -86,14 +133,39 @@ async def register_user(
     new_user = User(name=name, surname=surname, email=email, username=username, hashed_password=hashed_pw)
     try:
         crud.create_user(new_user)
-        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url="/user_login", status_code=status.HTTP_303_SEE_OTHER)
     except ValueError:
-        return templates.TemplateResponse("register.html", {
+        return templates.TemplateResponse("user/user_register.html", {
             "request": request,
             "error": "Username already exists. Please choose another."
         })
+    
+### --- Organization Registration --- ###
+@app.get("/org_register", response_class=HTMLResponse)
+async def register(request: Request):
+    return templates.TemplateResponse("org/org_register.html", {"request": request})
 
-### --- Logout Endpoint --- ###
+@app.post("/org_register", response_class=HTMLResponse)
+async def register_org(
+    request: Request, 
+    name: str = Form(...),
+    address: str = Form(...),
+    phone: str = Form(...),
+    email: EmailStr = Form(...), 
+    password: str = Form(...)
+):
+    hashed_pw = pwd_context.hash(password)
+    new_org = Organization(name=name, address=address, phone=phone, email=email, hashed_password=hashed_pw)
+    try:
+        crud.create_organization(new_org)
+        return RedirectResponse(url="/org_login", status_code=status.HTTP_303_SEE_OTHER)
+    except ValueError:
+        return templates.TemplateResponse("org/org_register.html", {
+            "request": request,
+            "error": "Organization already exists. Please choose another."
+        })
+
+### --- Logout --- ###
 @app.get("/logout")
 async def logout(request: Request):
     response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
@@ -102,7 +174,7 @@ async def logout(request: Request):
     response.set_cookie(key="session_token", value="", path="/", httponly=True, max_age=0)
     return response
 
-### --- Session Check Endpoint --- ###
+### --- Session Check --- ###
 @app.get("/check_session")
 async def check_session(request: Request):
     token = request.cookies.get("session_token")

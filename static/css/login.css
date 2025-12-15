@@ -1,5 +1,5 @@
 /* Stile del contenitore principale */
-.auth-container {
+.container {
     background-color: #ffffff;
     padding: 2rem;
     border-radius: 8px; /* Angoli arrotondati */
@@ -24,6 +24,7 @@
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -52,20 +53,7 @@ input:focus {
     background-color: #0056b3;
 }
 
-/* Stile del contenitore Guest */
-.Guest {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-/* Stile del contenitore guest_home */
-.guest_home {
-    text-align: center;
-    margin-top: 2rem;
-}
-
-.Guest a {
+.register a {
     text-decoration: none;     /* Via la sottolineatura */
     text-align: center;        /* Testo al centro */
     font-weight: 600;
