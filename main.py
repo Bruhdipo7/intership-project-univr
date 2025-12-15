@@ -49,7 +49,7 @@ async def login(request: Request, username: str = Form(...), password: str = For
 
     response = RedirectResponse(url="/user_home", status_code=status.HTTP_303_SEE_OTHER)
 
-    response.set_cookie(key="session_token", value=user, path="/", httponly=True, max_age=1800)  # 30 minutes session
+    response.set_cookie(key="session_token", value=user.username, path="/", httponly=True, max_age=1800)  # 30 minutes session
     response.delete_cookie(key="flash_error")
 
     return response
@@ -81,8 +81,8 @@ async def org_login(request: Request):
     return response
 
 @app.post("/org_login", response_class=HTMLResponse)
-async def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    org = crud.get_organization(email)
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    org = crud.get_organization(username)
 
     if not org or not pwd_context.verify(password, org.hashed_password):
         response = RedirectResponse(url="/org_login", status_code=status.HTTP_303_SEE_OTHER)
@@ -92,7 +92,7 @@ async def login(request: Request, email: str = Form(...), password: str = Form(.
 
     response = RedirectResponse(url="/org_home", status_code=status.HTTP_303_SEE_OTHER)
 
-    response.set_cookie(key="session_token", value=org, path="/", httponly=True, max_age=1800)  # 30 minutes session
+    response.set_cookie(key="session_token", value=org.username, path="/", httponly=True, max_age=1800)  # 30 minutes session
     response.delete_cookie(key="flash_error")
 
     return response
@@ -104,9 +104,9 @@ async def home(request: Request):
     if not cookie_org:
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
-    current_org = crud.get_org(cookie_org)
+    current_org = crud.get_organization(cookie_org)
     # If logged in, show home page
-    response = templates.TemplateResponse("org/org_home.html", {"request": request, "user": current_org}) 
+    response = templates.TemplateResponse("org/org_home.html", {"request": request, "org": current_org}) 
 
     return response
 
@@ -152,10 +152,11 @@ async def register_org(
     address: str = Form(...),
     phone: str = Form(...),
     email: EmailStr = Form(...), 
+    username: str = Form(...),
     password: str = Form(...)
 ):
     hashed_pw = pwd_context.hash(password)
-    new_org = Organization(name=name, address=address, phone=phone, email=email, hashed_password=hashed_pw)
+    new_org = Organization(name=name, address=address, phone=phone, email=email, username=username, hashed_password=hashed_pw)
     try:
         crud.create_organization(new_org)
         return RedirectResponse(url="/org_login", status_code=status.HTTP_303_SEE_OTHER)
@@ -179,6 +180,11 @@ async def logout(request: Request):
 async def check_session(request: Request):
     token = request.cookies.get("session_token")
     if not token:
+        return Response(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+    is_user = crud.get_user(token)
+    is_org = crud.get_organization(token)
+    if not is_user and not is_org:
         return Response(status_code=status.HTTP_401_UNAUTHORIZED)
     
     return Response(status_code=status.HTTP_200_OK)

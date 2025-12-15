@@ -31,12 +31,12 @@ def create_user(user: User):
         json.dump(user.model_dump(), f, indent=4) # model_dump() transforms the Pydantic model to a dict for JSON file
 
 ### --- Organization CRUD operations --- ###
-def get_json_path_org(name: str) -> str:
-    safe_name = name.lower().strip()
+def get_json_path_org(username: str) -> str:
+    safe_name = username.lower().strip()
     return os.path.join(DATA_DIR_ORGS, f"{safe_name}.json")
 
-def get_organization(name: str) -> Organization | None:
-    path = get_json_path_org(name)
+def get_organization(username: str) -> Organization | None:
+    path = get_json_path_org(username)
     if not os.path.exists(path):
         return None
     
@@ -45,7 +45,7 @@ def get_organization(name: str) -> Organization | None:
         return Organization(**data)
 
 def create_organization(org: Organization):
-    path = get_json_path(org.name)
+    path = get_json_path_org(org.username)
     if os.path.exists(path):
         raise ValueError("Organization already exists")
     

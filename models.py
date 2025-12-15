@@ -14,4 +14,5 @@ class Organization(BaseModel):
     address: str
     phone: str
     email: EmailStr
+    username: str
     hashed_password: str
