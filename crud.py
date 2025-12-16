@@ -54,19 +54,23 @@ def create_organization(org: Organization):
         json.dump(org.model_dump(), f, indent=4) # model_dump() transforms the Pydantic model to a dict for JSON file
 
 ### --- Extract skills by user input --- ###
-def extract_skills(target_role: str) -> list[str]:
+def extracting_skills(target_role: str) -> dict[str:str] | None:
     # reading Excel file, only columns C (function title) and E (Required skills)
-    df = pd.read_excel("data/ISCO-08 EN Structure and definitions.xlsx", usecols="C,E")
+    try: 
+        df = pd.read_excel("data/ISCO-08 EN Structure and definitions.xlsx", usecols="C,D")
 
-    col_C_name = df.columns[0]
-    col_E_name = df.columns[1]
+        col_title = df.columns[0]
+        col_definition = df.columns[1]
 
-    # filtering rows, converting to string, case insensitive search
-    filter = df[col_C_name].astype(str).str.contains(target_role, case=False, na=False)
-    results = df[filter]
+        # filtering rows, converting to string, case insensitive search
+        filter = df[col_title].astype(str).str.contains(target_role, case=False, na=False)
+        results = df[filter]
 
-    if not results.empty:
-        skills = results[col_E_name].values.tolist()
-        return skills
-    else:
+        if not results.empty:
+            roles_dict = dict(zip(results[col_title], results[col_definition]))
+            return roles_dict
+        else:
+            return None
+    except Exception as e:
+        print(f"Error extracting skills: {e}")
         return None

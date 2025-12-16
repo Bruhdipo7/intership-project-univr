@@ -1,15 +1,15 @@
-from fastapi import FastAPI, Form, Request, status, Response, APIRouter
+from fastapi import FastAPI, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from passlib.context import CryptContext
 from pydantic import EmailStr
+from typing import Optional
 
 import crud
 from models import User, Organization
 
 app = FastAPI()
-# router = APIRouter()
 
 # Monta la cartella "static" per servire CSS e immagini
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -207,22 +207,49 @@ async def logout(request: Request):
     return response
 
 ### --- Obtain skills from User Input --- ###
-@app.post("/extract_skills", response_class=HTMLResponse)
-async def extract_skills(request: Request, role1: str = Form(...), 
-                         role2: str = Form(...), role3: str = Form(...), 
-                         role4: str = Form(...), role5: str = Form(...)):
-    raw_roles = [role1, role2, role3, role4, role5]
-    roles = [role for role in raw_roles if role and role.strip() != ""]
+@app.post("/extract_skill_models", response_class=HTMLResponse)
+async def extract_skills(request: Request, search: str = Form(...)):
+    role = search.title().strip()
 
-    extracted_skills = {}
+    extracted_roles = {}
 
-    for role in roles:
-        skills_list = crud.extract_skills(role)
-        if skills_list:
-            extracted_skills[role] = skills_list
+    skill_models_list = crud.extracting_skills(role)
+    if skill_models_list:
+        extracted_roles[role] = skill_models_list
     
+    user = crud.get_user(request.cookies.get("session_token"))
+
     return templates.TemplateResponse("user/user_home.html", {
         "request": request,
-        "user": crud.get_user(request.cookies.get("session_token")),
-        "results": extracted_skills
+        "user": user,
+        "results": extracted_roles,
+        "last_search": search
     })
+
+### --- User Profile --- ###
+@app.get("/user_profile", response_class=HTMLResponse)
+async def user_profile(request: Request):
+    token = request.cookies.get("session_token")
+    
+    if not token:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+    current_user = crud.get_user(token)
+
+    if not current_user:
+        response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie("session_token", value="", path="/", httponly=True, max_age=0)
+        return response
+
+    response = templates.TemplateResponse(
+        "user/user_profile.html", 
+        {"request": request, "user": current_user}
+    )
+
+    # No cache storage
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Vary"] = "Cookie"
+
+    return response
