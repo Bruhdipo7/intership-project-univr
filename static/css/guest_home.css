@@ -29,11 +29,6 @@ body {
     font-size: 1.1rem;
 }
 
-.nav-right {
-    display: flex;
-    gap: 20px; 
-}
-
 .nav-link {
     text-decoration: none;
     color: #ecf0f1;

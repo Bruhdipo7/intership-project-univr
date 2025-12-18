@@ -217,14 +217,21 @@ async def extract_skill_models(request: Request, search: str = Form(...)):
     if skill_models_list:
         extracted_models[role] = skill_models_list
     
-    user = crud.get_user(request.cookies.get("session_token"))
+    if request.cookies.get("session_token"):
+        user = crud.get_user(request.cookies.get("session_token"))
 
-    return templates.TemplateResponse("user/user_home.html", {
-        "request": request,
-        "user": user,
-        "results": extracted_models,
-        "last_search": search
-    })
+        return templates.TemplateResponse("user/user_home.html", {
+            "request": request,
+            "user": user,
+            "results": extracted_models,
+            "last_search": search
+        })
+    else:
+        return templates.TemplateResponse("guest_home.html", {
+            "request": request,
+            "results": extracted_models,
+            "last_search": search
+        })
 
 ### --- Set Target Roles --- ###
 @app.post("/set_target_roles", response_class=HTMLResponse)

@@ -1,18 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Guest Home Page</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-</head>
-<body>
-    <div class="guest_home">
-        <h1>Welcome, Guest!</h1>
-        <p>In this page you can take a general look at which skills are required in a certain function.</p>
+{% extends "base.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/guest_home.css">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="name">Hello, <strong>Guest</strong></span>
+        </div>
+
+        <div class="nav-right">
+            <a href="/logout" class="nav-link btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <h1>Browsing for Skill Models</h1>
+        <p>On this page you can take a general look at skill models required for certain functions.</p>
+        
+        <div class="browsing-input">
+            <form action="/extract_skill_models" method="post" class="skill-form" autocomplete="off">
+                <input type="text" name="search" placeholder="🔍 Skill model: e.g. Manager" value="{{ last_search }}" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="skill-container">
+            {% if results %}
+                <hr style="width:100%; margin: 20px 0;">
+
+                {% for input_role, skill_dict in results.items() %}
+                    <h2>Skill Models for <strong>{{input_role}}</strong></h2>
+
+                    <div class="skills-list">
+                        <ul>
+                            {% for specific_name, description in skill_dict.items() %}
+                            <li>    
+                                <div class="skill-card">
+                                    <h3>{{ specific_name }}</h3>
+                                    <div>
+                                        <p>{{ description }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% if last_search %}
+                    <div class="no-results">
+                        <p>No skill models found for "<strong>{{ last_search }}</strong>".</p>
+                        <p style="font-size: 0.9em; color: #666;">Try checking the spelling or use another term.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <hr style="width:100%; margin-top: 30px;">
+
+        <h2>Recent Events (new tech, law changes, ecc...)</h2>
+        <div class="events-container">
+            <p>No recent events available.</p>
+        </div>
     </div>
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-    <div class="guest_home">
-        <a href="/" class="logout-link">Exit</a>
-    </div>
-</body>
-</html>
+{% endblock %}

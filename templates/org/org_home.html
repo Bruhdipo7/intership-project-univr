@@ -5,10 +5,26 @@
 {% endblock %}
 
 {% block content %}
-    <div class="welcome-box">
-        <h1>Hello, {{ org.name }}!</h1>
-        <p>This is your home page</p>
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="name">Hello, <strong>{{ org.name }}</strong></span>
+        </div>
 
-        <a href="/logout" class="logout-link">Logout</a>
+        <div class="nav-right">
+            <a href="/org_profile" class="nav-link">Profile</a>
+            <a href="/logout" class="nav-link btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <h1>Current Projects</h1>
+        <p>This is your project list.</p>
+
+        <hr style="width:100%; margin-top: 30px;">
+
+        <h2>Recent Events (new tech, law changes, ecc...)</h2>
+        <div class="events-container">
+            <p>No recent events available.</p>
+        </div>
     </div>
 {% endblock %}
