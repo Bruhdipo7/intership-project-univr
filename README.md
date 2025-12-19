@@ -6,11 +6,12 @@ The goal of this project is to analyze organizational skill gaps and map them to
 ## Current Features
 The application is currently in the development phase. A basic Authentication System is now functional.
 
-- **User Registration:** Users can sign up providing Name, Surname, Username, and Password.
+- **User Registration:** Users can sign up providing their info.
+- **Organization Registrazion:** Organization can sign up providing their info.
 - **Secure Authentication:** Passwords are never stored in plain text. The system uses **Argon2** hashing for security.
-- **Login System:** Users can log in to access their personal area.
+- **Login System:** Users/Orgs can log in to access their personal area.
 - **Guest Access:** A "Continue as Guest" mode allows limited access to the platform for non-registered users.
-- **Data Storage:** Currently using a lightweight JSON-based file system for user management.
+- **Data Storage:** Currently using a lightweight JSON-based file system for user/orgs management. EXCEL file added for reading roles/function and their descriptions.
 
 ## Tech Stack
 - **Backend:** Python, FastAPI
@@ -20,16 +21,19 @@ The application is currently in the development phase. A basic Authentication Sy
 - **Server:** Uvicorn
 
 ## Project Structure
-- `main.py`: Application entry point and route definitions.
-- `crud.py`: Handles file I/O operations (JSON reading/writing).
+- `main.py`: Application entry point.
+- `routes/`: Route definitions.
+- `config.py`: Project main configuration file.
+- `crud.py`: Handles file I/O operations (JSON reading/writing and EXCEL).
 - `models.py`: Pydantic models for data validation and structure.
-- `data/`: Directory containing JSON files (User database).
+- `data/`: Directory containing JSON and EXCEL files.
 - `static/`: CSS.
 - `templates/`: HTML templates.
+- `dependencies.py`: File used for getting current User/Org.
 
 ## How to Run
 1.  Clone the repository.
-2.  Install dependencies:
+2.  Install requirements:
     ```bash
     pip install -r requirements.txt
     ```
