@@ -51,12 +51,12 @@ def set_target_roles_user(user: User, target_roles: list[str]):
         json.dump(data, f, indent=4)
 
 ### --- Organization CRUD operations --- ###
-def get_json_path_org(username: str) -> str:
-    safe_name = username.lower().strip()
+def get_json_path_org(orgname: str) -> str:
+    safe_name = orgname.lower().strip()
     return os.path.join(DATA_DIR_ORGS, f"{safe_name}.json")
 
-def get_organization(username: str) -> Organization | None:
-    path = get_json_path_org(username)
+def get_organization(orgname: str) -> Organization | None:
+    path = get_json_path_org(orgname)
     if not os.path.exists(path):
         return None
     
@@ -65,7 +65,7 @@ def get_organization(username: str) -> Organization | None:
         return Organization(**data)
 
 def create_organization(org: Organization):
-    path = get_json_path_org(org.username)
+    path = get_json_path_org(org.orgname)
     if os.path.exists(path):
         raise ValueError("Organization already exists")
     
