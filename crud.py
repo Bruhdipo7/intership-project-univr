@@ -50,6 +50,27 @@ def set_target_roles_user(user: User, target_roles: list[str]):
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
 
+def change_password_user(user: User, new_pw: str) -> bool:
+    path = get_json_path(user.username)
+    
+    if not os.path.exists(path):
+        return False
+    
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
+
+        data["hashed_password"] = new_pw
+
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4)
+        
+        return True
+
+    except Exception as e:
+        return False
+    
+
 ### --- Organization CRUD operations --- ###
 def get_json_path_org(orgname: str) -> str:
     safe_name = orgname.lower().strip()
@@ -71,6 +92,26 @@ def create_organization(org: Organization):
     
     with open(path, "w") as f:
         json.dump(org.model_dump(), f, indent=4) # model_dump() transforms the Pydantic model to a dict for JSON file
+
+def change_password_org(org: Organization, new_pw: str) -> bool:
+    path = get_json_path_org(org.orgname)
+    
+    if not os.path.exists(path):
+        return False
+    
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
+
+        data["hashed_password"] = new_pw
+
+        with open(path, "w") as f:
+            json.dump(data, f, indent=4)
+        
+        return True
+
+    except Exception as e:
+        return False
 
 ### --- Extract skill models by user input --- ###
 def extracting_skill_models(user_query: str) -> dict[str:str] | None:

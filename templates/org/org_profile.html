@@ -1,27 +1,28 @@
 {% extends "base.html" %}
 
 {% block css %}
-    <link rel="stylesheet" href="/static/css/user_profile.css">
+    <link rel="stylesheet" href="/static/css/org_profile.css">
 {% endblock %}
 
 {% block content %}
     <nav class="navbar">
         <div class="nav-left">
-            <span class="name">Your Profile, <strong>{{ user.name }}</strong></span>
+            <span class="name">Business Profile, <strong>{{ org.name }}</strong></span>
         </div>
 
         <div class="nav-right">
-            <a href="/user_home" class="nav-link">Home</a>
+            <a href="/org_home" class="nav-link">Home</a>
             <a href="/logout" class="nav-link btn-logout">Logout</a>
         </div>
     </nav>
 
     <div class="main-container">
         <div class="profile_info">
-            <h2>User information</h2>
-            <p><strong>Name</strong>: {{ user.name }}</p>
-            <p><strong>Surname</strong>: {{ user.surname }}</p>
-            <p><strong>Email</strong>: {{ user.email }}</p>
+            <h2>Organization information</h2>
+            <p><strong>Name</strong>: {{ org.name }}</p>
+            <p><strong>Address</strong>: {{ org.address }}</p>
+            <p><strong>Email</strong>: {{ org.email }}</p>
+            <p><strong>Phone Number</strong>: {{ org.phone }}</p>
             
             <details {% if wrong_pw or failed or success %}open{% endif %}>
     
@@ -50,7 +51,7 @@
                     {% endif %}
                     
                     {% if not success %}
-                    <form action="/change_password_user" method="post">
+                    <form action="/change_password_org" method="post">
                         <label>Current Password:</label>
                         <input type="password" name="old_pw" required>
                         <br><br>
@@ -65,47 +66,6 @@
 
                 </div>
             </details>
-        </div>
-
-        <hr style="width:100%; margin-top: 30px;">
-
-        <div class="user-skills">
-            <h2>Your Skill Models</h2>
-            <!-- target blank for new tab; rel noopener noreferrer to avoid slowing the main page down -->
-            <a href="https://app.muchskills.com/dashboard" class="link-muchskills" target="_blank" rel="noopener noreferrer">Use MuchSkill to manage your skills!</a>
-            <p>Current Skill Models.</p>
-        </div>
-
-        <hr style="width:100%; margin-top: 30px;">
-
-        <div class="show-target-roles">
-            {% if user.target_roles %}
-                <h2>Current target roles</h2>
-
-                <ul>
-                    {% for target_role in user.target_roles %}
-                        <li>{{ target_role }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <h3>Update your target roles (min 1 - max 5)</h3>
-        
-        <div class="role-input">
-            <form action="/set_target_roles" method="post" class="skill-form" autocomplete="off">
-                <input type="text" name="role1" placeholder="Target Role 1" required>
-                <br>
-                <input type="text" name="role2" placeholder="Target Role 2">
-                <br>
-                <input type="text" name="role3" placeholder="Target Role 3">
-                <br>
-                <input type="text" name="role4" placeholder="Target Role 4">
-                <br>
-                <input type="text" name="role5" placeholder="Target Role 5">
-                <br>
-                <button type="submit">Submit</button>
-            </form>
         </div>
 
         <hr style="width:100%; margin-top: 30px;">

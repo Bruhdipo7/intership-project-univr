@@ -3,7 +3,7 @@
     "surname": "Pedretti",
     "username": "simo",
     "email": "simonepedretti@gmail.com",
-    "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$DaGU8j5nzHkvJYQwRshZSw$rQxOODb+e+COljs0zfFZ3UOdDD84NFaWFEScQO8KkxA",
+    "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$gnCu9R4DwJiT0vrf29s7pw$zJ0GM4ngT8DSh2oeRJhoKwop9nVaPgmAYjXnQrvFIgw",
     "target_roles": [
         "Agricultural and Forestry Production Managers",
         "Agricultural, Forestry and Fishery Labourers",

@@ -153,3 +153,36 @@ async def set_target_roles(
         "request": request,
         "user": user,
     })
+
+### --- Password Change --- ###
+@router.post("/change_password_user", response_class=HTMLResponse)
+async def change_password(request: Request, user = Depends(get_current_user), old_pw: str = Form(...), new_pw: str = Form(...)):
+    if not user:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
+    if not pwd_context.verify(old_pw, user.hashed_password):
+        error = "Your old password is not correct."
+        return templates.TemplateResponse("user/user_profile.html", {
+            "request": request,
+            "user": user,
+            "wrong_pw": error
+        })
+    
+    new_pw_hashed = pwd_context.hash(new_pw)
+
+    success = crud.change_password_user(user, new_pw_hashed)
+
+    if success:
+        msg = "Password updated successfully!"
+        return templates.TemplateResponse("user/user_profile.html", {
+            "request": request,
+            "user": user,
+            "success": msg
+        })
+    else:
+        failed = "Failed to update your password."
+        return templates.TemplateResponse("user/user_profile.html", {
+            "request": request,
+            "user": user,
+            "failed": failed
+        })

@@ -86,3 +86,57 @@ async def register_org(
             "request": request,
             "error": "Organization already exists. Please choose another."
         })
+    
+### --- Organization Profile --- ###
+@router.get("/org_profile", response_class=HTMLResponse)
+async def org_profile(request: Request, org = Depends(get_current_org)):
+    if not org:
+        response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie("session_token", value="", path="/", httponly=True, max_age=0)
+        return response
+
+    response = templates.TemplateResponse(
+        "org/org_profile.html", 
+        {"request": request, "org": org}
+    )
+
+    # No cache storage
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    response.headers["Vary"] = "Cookie"
+
+    return response
+
+### --- Password Change --- ###
+@router.post("/change_password_org", response_class=HTMLResponse)
+async def change_password(request: Request, org = Depends(get_current_org), old_pw: str = Form(...), new_pw: str = Form(...)):
+    if not org:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
+    if not pwd_context.verify(old_pw, org.hashed_password):
+        error = "Your old password is not correct."
+        return templates.TemplateResponse("org/org_profile.html", {
+            "request": request,
+            "usorger": org,
+            "wrong_pw": error
+        })
+    
+    new_pw_hashed = pwd_context.hash(new_pw)
+
+    success = crud.change_password_org(org, new_pw_hashed)
+
+    if success:
+        msg = "Password updated successfully!"
+        return templates.TemplateResponse("org/org_profile.html", {
+            "request": request,
+            "org": org,
+            "success": msg
+        })
+    else:
+        failed = "Failed to update your password."
+        return templates.TemplateResponse("org/org_profile.html", {
+            "request": request,
+            "org": org,
+            "failed": failed
+        })
