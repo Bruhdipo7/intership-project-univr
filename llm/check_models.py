@@ -1,6 +1,5 @@
 from google import genai
 
-# INCOLLA QUI LA TUA API KEY NUOVA
 API_KEY = "CURRENT_KEY"
 
 client = genai.Client(api_key=API_KEY)
